@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Product = require("../models/product");
+const tempProduct = require("../models/tempProduct");
 
 exports.products_get_all = (req, res, next) => {
-   Product.find()
+   tempProduct.find()
     .select("name price _id")
     .exec()
     .then(docs => {
@@ -29,7 +30,7 @@ exports.products_get_all = (req, res, next) => {
 };
 
 exports.products_create_product = (req, res, next) => {
-    const product = new Product({
+    const product = new tempProduct({
 	_id: new mongoose.Types.ObjectId(),
 	name: req.body.name,
 	price: req.body.price
@@ -59,7 +60,7 @@ exports.products_create_product = (req, res, next) => {
 
 exports.products_get_product = (req, res, next) => {
     const id = req.params.productId;
-    Product.findById(id)
+    tempProduct.findById(id)
     .select('name price _id')
     .exec()
     .then(doc => {
@@ -88,10 +89,9 @@ exports.products_update_product = (req, res, next) => {
     for (const ops of req.body) {
 	updateOps[ops.propName] = ops.value;
     }
-    Product.update({ _id: id }, { $set: updateOps })
+    tempProduct.update({ _id: id }, { $set: updateOps })
     .exec()
     .then(result => {
-	console.log(result);
 	res.status(200).json({
 	    message: 'Product updated',
 	    request: {
@@ -108,7 +108,7 @@ exports.products_update_product = (req, res, next) => {
 
 exports.products_delete = (req, res, next) => {
     const id = req.params.productId;
-    Product.remove({_id: id})
+    tempProduct.remove({_id: id})
     .exec()
     .then( result => {
 	res.status(200).json({
